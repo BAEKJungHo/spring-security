@@ -27,6 +27,12 @@ public class SampleController {
 
     @Autowired BookRepository bookRepository;
 
+    /**
+     * Principal Interface 를 사용한 메시지 출력
+     * @param model
+     * @param account
+     * @return
+     */
     @GetMapping("/")
     public String index(Model model, @CurrentUser Account account) {
         if (account == null) {
@@ -38,12 +44,23 @@ public class SampleController {
         return "index";
     }
 
+    /**
+     * 그냥 접근 가능한 페이지
+     * @param model
+     * @return
+     */
     @GetMapping("/info")
     public String info(Model model) {
         model.addAttribute("message", "Info");
         return "info";
     }
 
+    /**
+     * 로그인이 필요한 페이지
+     * @param model
+     * @param principal
+     * @return
+     */
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {
         model.addAttribute("message", "Hello " + principal.getName());
