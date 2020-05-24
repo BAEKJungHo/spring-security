@@ -54,18 +54,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
+    /**
+     * 웹 페이지 접근에 대한 권한 설정
+     * @param http
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(new LoggingFilter(), WebAsyncManagerIntegrationFilter.class);
 
         http.authorizeRequests()
-                .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll()
-                .mvcMatchers("/admin").hasRole("ADMIN")
-                .mvcMatchers("/user").hasRole("USER")
-                .anyRequest().authenticated()
+                .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll() // 해당 URL 에 대해서는 로그인 없이도 모두 다 허용
+                .mvcMatchers("/admin").hasRole("ADMIN") // ADMIN 권한이 있는 사용자에게만 해당 URL 허용
+                .mvcMatchers("/user").hasRole("USER") // USER 권한이 있는 사용자에게만 해당 URL 허용
+                .anyRequest().authenticated() // 그외 나머지는 인증을 해야만 접근이 가능하도록 설정
                 .expressionHandler(expressionHandler());
 
-        http.formLogin()
+        http.formLogin() // 로그인을 하지않은 상태로, 로그인이 필요한 페이지에 접근하는 경우 로그인 페이지로 redirect
                 .loginPage("/login")
                 .permitAll();
 
