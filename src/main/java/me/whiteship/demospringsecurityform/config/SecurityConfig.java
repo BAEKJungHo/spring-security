@@ -63,13 +63,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(new LoggingFilter(), WebAsyncManagerIntegrationFilter.class);
 
+        // 요청을 어떤식으로 인가할 지 설정
         http.authorizeRequests()
                 .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll() // 해당 URL 에 대해서는 로그인 없이도 모두 다 허용
                 .mvcMatchers("/admin").hasRole("ADMIN") // ADMIN 권한이 있는 사용자에게만 해당 URL 허용
                 .mvcMatchers("/user").hasRole("USER") // USER 권한이 있는 사용자에게만 해당 URL 허용
-                .anyRequest().authenticated() // 그외 나머지는 인증을 해야만 접근이 가능하도록 설정
+                .anyRequest().authenticated() // 그외 나머지는 인증만 하면 접근이 가능하도록 설정
                 .expressionHandler(expressionHandler());
 
+        // 폼 로그인 설정
         http.formLogin() // 로그인을 하지않은 상태로, 로그인이 필요한 페이지에 접근하는 경우 로그인 페이지로 redirect
                 .loginPage("/login")
                 .permitAll();
