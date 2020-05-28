@@ -52,6 +52,11 @@ public class Account {
         this.role = role;
     }
 
+    /**
+     * 스프링 시큐리티가 제공하는 PasswordEncoder
+     * @SpringBootApplication 가 붙은 클래스에서 PasswordEncoder 를 빈으로 등록해야 한다.
+     * @param passwordEncoder
+     */
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
     }
