@@ -1,9 +1,14 @@
 # AuthenticationManager 와 Authentication
 
-스프링 시큐리티에서 인증(Authentication) 은 AuthenticationManager 가 한다.
+스프링 시큐리티에서 인증(Authentication) 은 AuthenticationManager 가 한다. AuthenticationManager 구현체로는 ProviderManager 를 사용한다.
 
 ```java
-Authentication authenticate(Authentication authentication) throws AuthenticationException;
+public interface AuthenticationManager {
+    /**
+     * authentication 파라미터에 폼 인증의 경우 사용자가 입력한 Id 와 Password 를 담고 있다.
+     */
+    Authentication authenticate(Authentication authentication) throws AuthenticationException;
+}
 ```
 
 - `인자로 받은 Authentication` 이 `유효한 인증인지 확인`하고 `Authentication 객체를 리턴`한다.
