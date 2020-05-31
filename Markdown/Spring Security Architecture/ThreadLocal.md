@@ -36,8 +36,10 @@ public class AccountContext {
 @GetMapping("/dashboard")
 public String dashboard(Model model, Principal principal) {
     model.addAttribute("message", "Hello " + principal.getName());
+    
     // ThreadLocal 에 account 정보 세팅
     AccountContext.setAccount(accountRepository.findByUsername(principal.getName()));
+    
     sampleService.dashboard();
     return "dashboard";
 }
@@ -50,8 +52,10 @@ public String dashboard(Model model, Principal principal) {
 public void dashboard() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    
     // ThreadLocal 에 저장된 account 꺼내기
     Account account = AccountContext.getAccount();
+    
     System.out.println("===============");
     System.out.println(authentication);
     System.out.println(userDetails.getUsername());
