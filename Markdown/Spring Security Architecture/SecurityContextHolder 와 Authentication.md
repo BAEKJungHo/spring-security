@@ -25,6 +25,7 @@ public class SampleService {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public void dashboard() {
         /**
+         * SecurityContextHolder 는 ThreadLocal 을 사용하므로 아래 정보는 한 스레드에 유지된다.
          * SecurityContextHolder 에 있는 SecurityContext 를 가져와서 그 안에 있는 Authentication 을 꺼내오고
          * Authentication 에 있는 Principal 객체를 가져온다. 그 객체의 타입은 UserDetails 이다.
          */
