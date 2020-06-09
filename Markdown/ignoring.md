@@ -45,3 +45,33 @@ localhost:8080/ 으로 URL 요청을 보내면 localhost:8080/ 에 대한 요청
     }
 ```
 
+## SecurityConfig 의 configure 메서드에서 시큐리티 필터 제외 설정하기
+
+```java
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+  http.authorizeRequests()
+    .mvcMathcers("/", "/account/**").permitAll()
+    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+    .anyRequest.authenticated()
+    .expressionHandler(expressionHandler());
+  http.formLogin();
+  http.httpBasic();
+}
+```
+
+위에서 소개한 첫 번째 방법과 결과는 같지만 성능은 이게 더 떨어진다. 개발자 도구의 Network 에서 Waterfall 을 보면 configure 메서드에서 설정하는 것이 Waterfall 이 더 길게 나온다.
+
+따라서 위에서 소개한 첫 번째 방법을 추천한다.
+
+왜 configure 메서드에서 설정한 방식이 더 성능이 떨어지냐면 http.authorizeRequests() 로 설정한 모든 것들은 FilterChain 을 거치기 때문에
+
+첫 번째 방법에서는 
+
+```java
+List<Filter> filters = this.getFilters((HttpServletRequest)fwRequest);
+```
+
+여기서 filters 값이 0 이나오는데, 두 번째 방법에서는 15개의 Chain 을 타게 된다.
+
+favicon.ico 는 15 번째 에 위치한 chain 인 `FilterSecurityIntercetor` 에서 검사를 하게된다.
