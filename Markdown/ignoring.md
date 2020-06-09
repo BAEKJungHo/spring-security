@@ -2,6 +2,8 @@
 
 WebSecurity 의 ignoring() 을 사용해서 시큐리티 필터 적용을 제외할 요청을 설정할 수 있다.
 
+- 정적 자원 요청은 스프링 시큐리티 필터를 적용하지 않도록 
+
 ```java
 @Override
 public void configure(WebSecurity web) throws Exception {
@@ -45,7 +47,7 @@ localhost:8080/ 으로 URL 요청을 보내면 localhost:8080/ 에 대한 요청
     }
 ```
 
-## SecurityConfig 의 configure 메서드에서 시큐리티 필터 제외 설정하기
+## http.authorizeRequests() 에서 시큐리티 필터 제외 설정하기
 
 ```java
 @Override
@@ -64,7 +66,7 @@ protected void configure(HttpSecurity http) throws Exception {
 
 따라서 위에서 소개한 첫 번째 방법을 추천한다.
 
-왜 configure 메서드에서 설정한 방식이 더 성능이 떨어지냐면 http.authorizeRequests() 로 설정한 모든 것들은 FilterChain 을 거치기 때문에
+왜 http.authorizeRequests() 에서 설정한 방식이 더 성능이 떨어지냐면 http.authorizeRequests() 로 설정한 모든 것들은 FilterChain 을 거치기 때문에 
 
 첫 번째 방법에서는 
 
@@ -74,4 +76,35 @@ List<Filter> filters = this.getFilters((HttpServletRequest)fwRequest);
 
 여기서 filters 값이 0 이나오는데, 두 번째 방법에서는 15개의 Chain 을 타게 된다.
 
-favicon.ico 는 15 번째 에 위치한 chain 인 `FilterSecurityIntercetor` 에서 검사를 하게된다.
+favicon.ico 는 15 번째에 위치한 chain 인 `FilterSecurityIntercetor` 에서 검사를 하게된다.
+
+그러면 왜 `.mvcMathcers("/", "/account/**").permitAll()` 이런 코드들은 첫 번째 방법처럼 안하냐고 질문할 수도 있는데
+
+그 이유는 `동적 자원 요청 처리는 FilterChain 을 거쳐야 하기 때문`이다.
+
+## 결론 : 정적 리소스 처리 vs 동적 리소스 처리
+
+- 정적 리소스 처리
+
+```java
+@Override
+public void configure(WebSecurity web) throws Exception {
+  // 파비콘 요청 무시
+  // web.ignoring().mvcMatchers("/favicon.ico");
+  web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+}
+```
+
+- 동적 리소스 처리
+
+```java
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+  http.authorizeRequests()
+    .mvcMathcers("/", "/account/**").permitAll()
+    .anyRequest.authenticated()
+    .expressionHandler(expressionHandler());
+  http.formLogin();
+  http.httpBasic();
+}
+```
