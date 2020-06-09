@@ -108,3 +108,5 @@ protected void configure(HttpSecurity http) throws Exception {
   http.httpBasic();
 }
 ```
+
+만약, 정적 리소스에 대해서도 권한을 처리하고 싶으면 동적 리소스 처리하는 곳에 소스를 넣어 처리하면 된다.
