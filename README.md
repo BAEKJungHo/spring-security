@@ -6,6 +6,5 @@
 
 ## 스프링 시큐리티 아키텍처 설명 유튜브
 
-스프링 시큐리티 프로젝트의 메인테이너가 스프링 시큐리티 아키텍처에 대해서 설명한다.
+[Go to youtube](https://www.youtube.com/watch?v=xEnvAAhMGu4&t=1586s). 스프링 시큐리티 프로젝트의 메인테이너가 스프링 시큐리티 아키텍처에 대해서 설명한다.
 
-[Click .. watch youtube](https://www.youtube.com/watch?v=xEnvAAhMGu4&t=1586s)
